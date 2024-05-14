@@ -26,14 +26,14 @@ public class TestUI1 {
         JLabel test1 = new JLabel("");
         test1.setFont(new Font("굴림", Font.BOLD, 47));
         test1.setBounds(300, 227, 238, 53);
-        f.getContentPane().add(test1);
+        f.getContentPane().add(test1); //제목
 
 
 
         JLabel test2 = new JLabel("");
         test2.setFont(new Font("굴림", Font.BOLD, 47));
         test2.setBounds(300, 427, 238, 53);
-        f.getContentPane().add(test2);
+        f.getContentPane().add(test2); // 내용
 
         MemberDao memberDao = new MemberDao();
         MemberDto rsDto = memberDao.selectPage(page);
