@@ -18,13 +18,9 @@ public class SessionManager {
         sessionData.remove(key);
     }
 
-
     // 데이터 저장
     //    SessionManager.setAttribute("message", "Hello, world!");
 
     // 데이터 불러오기
     //    String message = SessionManager.getAttribute("message");
-
 }
-
-

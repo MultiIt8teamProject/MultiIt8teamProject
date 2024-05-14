@@ -73,6 +73,22 @@ public class MyPageUI {
         //Confirm Password Button
 
 
+        JButton btnMemberListUI = new JButton("회원 리스트");
+        btnMemberListUI.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                MemberListUI memberListUI = new MemberListUI();
+                f.dispose();
+                memberListUI.open();
+            }
+        });
+        btnMemberListUI.setFont(new Font("굴림", Font.BOLD, 23));
+        btnMemberListUI.setForeground(Color.BLACK);
+        btnMemberListUI.setBackground(Color.WHITE);
+        btnMemberListUI.setBounds(200, 282, 200, 38);
+        f.getContentPane().add(btnMemberListUI);
+        //Open MemberInfoUI Button
+
+
         JButton btndeleteAccount = new JButton("회원 탈퇴");
         btndeleteAccount.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {

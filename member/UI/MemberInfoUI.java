@@ -246,7 +246,6 @@ public class MemberInfoUI {
         f.getContentPane().add(btnEditAccountInfo);
         //Edit Account Info
 
-
         f.setVisible(true);
     }
 }
