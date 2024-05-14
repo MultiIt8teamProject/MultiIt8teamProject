@@ -1,9 +1,9 @@
 package com.recipe.member.dao;
 
-
 import com.recipe.member.dto.MemberDto;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class MemberDao {
 
@@ -611,9 +611,148 @@ public class MemberDao {
 
         return memberDto;
     }
-    //Delete
+
+    public ArrayList<MemberDto> list() {
+        ArrayList<MemberDto> list = new ArrayList<>();
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+
+            Class.forName("oracle.jdbc.driver.OracleDriver");
+            System.out.println("1. 드라이버 설정 성공..");
+
+            String url = "jdbc:oracle:thin:@localhost:1521:xe";
+            String user = "recipe";
+            String password = "recipe";
+            con = DriverManager.getConnection(url, user, password);
+            System.out.println("2. db연결 성공." + con);
+
+            // 오토커밋을 false로 설정
+            con.setAutoCommit(false);
+            System.out.println("3. 오토커밋 설정 비활성화.");
+
+            // String문 만들기
+            String sql = "SELECT * FROM MEMBERS";
+            ps = con.prepareStatement(sql);
+
+            // ? 에 입력할 순서대로 매핑시키기
 
 
+            System.out.println("4. sql문 객체 생성 성공.");
+            rs = ps.executeQuery();
+            //https://www.tutorialspoint.com/jdbc/jdbc-data-types.htm
+
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                MemberDto memberDto = new MemberDto();
+                memberDto.setNo(rs.getInt("NO"));
+                memberDto.setId(rs.getString("ID"));
+                memberDto.setName(rs.getString("name"));
+                memberDto.setGender(rs.getString("GENDER"));
+                memberDto.setTel(rs.getString("tel"));
+
+                list.add(memberDto);
+            }
+
+        }  catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+            if (con != null) {
+                try {
+
+                    con.rollback(); // 예외 발생 시 롤백
+                } catch (SQLException ex) {
+
+                    ex.printStackTrace();
+                }
+
+                System.out.println("트랜잭션 롤백.");
+            }
+        } finally {
+            try {
+
+                ps.close(); // 먼저닫기
+                con.close();
+            } catch (SQLException e) {
+
+                e.printStackTrace();
+                e.printStackTrace();
+            }
+        }
+        return list;
+    }
+
+    public MemberDto selectPage(String page) {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        MemberDto memberDto = null;
+
+        try {
+            Class.forName("oracle.jdbc.driver.OracleDriver");
+            System.out.println("1. 드라이버 설정 성공..");
+
+            String url = "jdbc:oracle:thin:@localhost:1521:xe";
+            String user = "recipe";
+            String password = "recipe";
+            con = DriverManager.getConnection(url, user, password);
+            System.out.println("2. db연결 성공." + con);
+
+            // 오토커밋을 false로 설정
+            con.setAutoCommit(false);
+            System.out.println("3. 오토커밋 설정 비활성화.");
+
+            // String문 만들기
+            String sql = "SELECT * FROM MEMBERS WHERE NAME = ?";
+            ps = con.prepareStatement(sql);
+
+            // ? 에 입력할 순서대로 매핑시키기
+            ps.setString(1, page);
+
+            System.out.println("4. sql문 객체 생성 성공.");
+            rs = ps.executeQuery();
+            //https://www.tutorialspoint.com/jdbc/jdbc-data-types.htm
+            if (rs.next()) {
+                memberDto = new MemberDto();
+
+                memberDto.setId(rs.getString("ID"));
+                memberDto.setPw(rs.getString("PW"));
+                memberDto.setName(rs.getString("NAME"));
+                memberDto.setTel(rs.getString("TEL"));
+                memberDto.setSignupDate(rs.getDate("SIGNUP_DATE"));
+            }
+
+            System.out.println("5. sql문 전송 성공, 결과1>> " + rs);
 
 
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+            if (con != null) {
+                try {
+
+                    con.rollback(); // 예외 발생 시 롤백
+                } catch (SQLException ex) {
+
+                    ex.printStackTrace();
+                }
+
+                System.out.println("트랜잭션 롤백.");
+            }
+        } finally {
+            try {
+
+                ps.close(); // 먼저닫기
+                con.close();
+            } catch (SQLException e) {
+
+                e.printStackTrace();
+                e.printStackTrace();
+            }
+        }
+
+        return memberDto;
+    }
 }
