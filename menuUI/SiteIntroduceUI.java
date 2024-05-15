@@ -1,33 +1,28 @@
-package com.recipe.member.UI;
+package com.recipe.menuUI;
 
-import com.recipe.menuUI.SiteIntroduceUI;
 import com.recipe.run.MainController;
 import com.recipe.member.Session.SessionManager;
-import com.recipe.post.dao.PostDao;
-import com.recipe.post.dto.PostDto;
+import com.recipe.member.UI.LoginUI;
+import com.recipe.member.UI.MyPageUI;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
-public class PostListUI {
+public class SiteIntroduceUI {
 
     private JFrame frame;
     private JPanel panel;
 
-    private static JScrollPane scroll = null;
-
     public void open() {
 
         frame = new JFrame();
-        frame.setTitle("자취생 레시피 사이트");
+
+        frame.setTitle("사이트 소개");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(900, 700);
-
-        panel = new JPanel();
-        panel.setBounds(0, 200, 860, 87);
+        panel = new JPanel(new BorderLayout());
 
         //----------------------------------------------
 
@@ -36,11 +31,11 @@ public class PostListUI {
         headerPanel.setBackground(Color.PINK);
         headerPanel.setPreferredSize(new Dimension(headerPanel.getWidth(), 100)); // bar 높이 설정
         headerPanel.setLayout(new BorderLayout());
-        JLabel textLabel = new JLabel("혼밥 요리 닷컴");
-        textLabel.setFont(new Font("맑은 고딕", Font.BOLD, 30)); // 폰트 설정
-        textLabel.setForeground(Color.WHITE); // 텍스트 색상 설정
-        textLabel.setHorizontalAlignment(SwingConstants.CENTER); // 텍스트 가운데 정렬
-        headerPanel.add(textLabel, BorderLayout.CENTER); // 텍스트 레이블을 headerPanel의 중앙에 추가
+        JLabel titleLabel = new JLabel("혼밥 요리 닷컴");
+        titleLabel.setFont(new Font("맑은 고딕", Font.BOLD, 30)); // 폰트 설정
+        titleLabel.setForeground(Color.WHITE); // 텍스트 색상 설정
+        titleLabel.setHorizontalAlignment(SwingConstants.CENTER); // 텍스트 가운데 정렬
+        headerPanel.add(titleLabel, BorderLayout.CENTER); // 텍스트 레이블을 headerPanel의 중앙에 추가
         panel.add(headerPanel, BorderLayout.NORTH); // 헤더 패널을 상단에 추가
 
 
@@ -83,7 +78,6 @@ public class PostListUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SessionManager.clearSession();
-
                 JOptionPane.showMessageDialog(null, "로그아웃했습니다.");
                 frame.dispose(); // 현재 화면 닫기
                 MainController.returnToHome(); // 홈 버튼을 눌렀을 때 초기화면으로 돌아가는 메서드 호출
@@ -190,41 +184,17 @@ public class PostListUI {
         //----------------------------------------------
 
 
-        JLabel lblNewLabel = new JLabel("내가 쓴 글");
-        lblNewLabel.setFont(new Font("굴림", Font.BOLD, 47));
-        lblNewLabel.setBounds(300, 27, 508, 53);
-        lblNewLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panel.add(lblNewLabel);
-        //Main Topic
+        JLabel textLabel = new JLabel("<html>안녕하세요! 혼밥 요리 닷컴에 오신 것을 환영합니다.<br>" +
+                "자취생들을 위해 다양한 요리 레시피를 제공하고 있습니다. 바쁜 일상 속에서도 " +
+                "쉽고 빠르게 요리할 수 있는 레시피부터 가성비 좋은 요리까지, " + "여러분의 요리 경험을 더욱 " +
+                "즐겁게 만들어 드립니다.<br>자세한 사항이나 궁금한 점이 있다면 언제든 문의해주세요.</html>");
+        textLabel.setFont(new Font("맑은 고딕", Font.BOLD, 20));
+        textLabel.setForeground(Color.BLACK); // 텍스트 색상 설정
+        textLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        panel.add(textLabel, BorderLayout.CENTER);
+        frame.add(panel);
 
 
-        PostDao postDao = new PostDao();
-        ArrayList<PostDto> list = postDao.postList(memberId);
-
-
-        if (list.size() == 0) {
-            System.out.println("검색결과 없음.");
-        } else {
-            System.out.println("검색결과는 전체 " + list.size() + "개 입니다.");
-            String[] header = {"카테고리", "제목"};
-            String[][] all = new String[list.size()][2];
-            for (int i = 0; i < list.size(); i++) {
-                all[i][0] = list.get(i).getRCategory();
-                all[i][1] = list.get(i).getTitle();
-            }
-
-            JTable postListTable = new JTable(all, header);
-            postListTable.setFont(new Font("맑은 고딕", Font.BOLD, 15));
-            postListTable.setEnabled(false);
-            //PostListTable
-
-            JScrollPane scroll = new JScrollPane(postListTable);
-            scroll.setPreferredSize(new Dimension(200, 400));
-            panel.add(scroll);
-        }
-
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        frame.add(panel, BorderLayout.CENTER);
         frame.setVisible(true);
     }
 }

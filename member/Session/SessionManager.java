@@ -18,9 +18,16 @@ public class SessionManager {
         sessionData.remove(key);
     }
 
+    public static void clearSession() {
+        sessionData.clear();
+    }
+
     // 데이터 저장
     //    SessionManager.setAttribute("message", "Hello, world!");
 
     // 데이터 불러오기
     //    String message = SessionManager.getAttribute("message");
+
+    // 세션 데이터 초기화
+    //    SessionManager.clearSession();
 }
