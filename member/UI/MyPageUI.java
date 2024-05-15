@@ -1,5 +1,7 @@
 package com.recipe.member.UI;
 
+import com.recipe.menuUI.SiteIntroduceUI;
+import com.recipe.run.MainController;
 import com.recipe.member.Session.SessionManager;
 import com.recipe.member.dao.MemberDao;
 
@@ -10,18 +12,183 @@ import java.awt.event.ActionListener;
 
 public class MyPageUI {
 
+    private JFrame frame;
+    private JPanel panel;
+
+    private static JScrollPane scroll = null;
+
     public void open() {
 
-        JFrame f = new JFrame();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.getContentPane().setBackground(Color.GRAY);
-        f.setSize(860, 1000);
-        f.getContentPane().setLayout(null);
+        frame = new JFrame();
+        frame.setTitle("자취생 레시피 사이트");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(900, 700);
+        panel = new JPanel(new BorderLayout());
+
+        //----------------------------------------------
+
+        // 헤더
+        JPanel headerPanel = new JPanel();
+        headerPanel.setBackground(Color.PINK);
+        headerPanel.setPreferredSize(new Dimension(headerPanel.getWidth(), 100)); // bar 높이 설정
+        headerPanel.setLayout(new BorderLayout());
+        JLabel textLabel = new JLabel("혼밥 요리 닷컴");
+        textLabel.setFont(new Font("맑은 고딕", Font.BOLD, 30)); // 폰트 설정
+        textLabel.setForeground(Color.WHITE); // 텍스트 색상 설정
+        textLabel.setHorizontalAlignment(SwingConstants.CENTER); // 텍스트 가운데 정렬
+        headerPanel.add(textLabel, BorderLayout.CENTER); // 텍스트 레이블을 headerPanel의 중앙에 추가
+        panel.add(headerPanel, BorderLayout.NORTH); // 헤더 패널을 상단에 추가
+
+
+        // 홈 버튼 추가
+        JButton homeButton = new JButton(" Home");
+        homeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose(); // 현재 화면 닫기
+                MainController.returnToHome(); // 홈 버튼을 눌렀을 때 초기화면으로 돌아가는 메서드 호출
+
+            }
+        });
+        homeButton.setFont(new Font("맑은 고딕", Font.BOLD, 20));
+        homeButton.setForeground(Color.WHITE);
+        homeButton.setBackground(Color.PINK);
+        homeButton.setBorder(BorderFactory.createLineBorder(Color.pink, 2));
+        headerPanel.add(homeButton, BorderLayout.WEST);
+
+
+        // 로그인 버튼 추가
+        JButton mainloginButton = new JButton("로그인 ");
+        mainloginButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                LoginUI loginUI = new LoginUI();
+                frame.dispose();
+                loginUI.open();
+            }
+        });
+        mainloginButton.setFont(new Font("맑은 고딕", Font.BOLD, 13));
+        mainloginButton.setForeground(Color.WHITE);
+        mainloginButton.setBackground(Color.PINK);
+        mainloginButton.setBorder(BorderFactory.createLineBorder(Color.pink, 2)); // 테두리 선 설정
+
+
+        // 로그아웃 버튼 추가
+        JButton mainlogoutButton = new JButton("로그아웃 ");
+        mainlogoutButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SessionManager.clearSession();
+
+                JOptionPane.showMessageDialog(null, "로그아웃했습니다.");
+                frame.dispose(); // 현재 화면 닫기
+                MainController.returnToHome(); // 홈 버튼을 눌렀을 때 초기화면으로 돌아가는 메서드 호출
+            }
+        });
+        mainlogoutButton.setFont(new Font("맑은 고딕", Font.BOLD, 13));
+        mainlogoutButton.setForeground(Color.WHITE);
+        mainlogoutButton.setBackground(Color.PINK);
+        mainlogoutButton.setBorder(BorderFactory.createLineBorder(Color.pink, 2)); // 테두리 선 설정
+
+
+        String memberId = SessionManager.getAttribute("userId");
+        if(memberId != null && !memberId.isEmpty()){
+            headerPanel.add(mainlogoutButton, BorderLayout.EAST);
+        } else  {
+            headerPanel.add(mainloginButton, BorderLayout.EAST);
+        }
+
+        //---------------------------------------------------
+
+        // 왼쪽 bar
+        JPanel navPanel = new JPanel();
+        navPanel.setBackground(Color.pink);
+        navPanel.setPreferredSize(new Dimension(150, frame.getHeight())); // bar 크기 설정
+        navPanel.setLayout(new BorderLayout());
+        navPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 10));
+
+        // 공지사항 버튼
+        JButton mainNoticeButton = new JButton("공지사항");
+        // 공지사항 버튼 클릭 시
+        mainNoticeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //NoticeUI noticeUI = new NoticeUI();
+                //NoticeUI.open();
+            }
+        });
+        mainNoticeButton.setFont(new Font("맑은 고딕", Font.BOLD, 20));
+        mainNoticeButton.setForeground(Color.WHITE);
+        mainNoticeButton.setBackground(Color.PINK);
+        mainNoticeButton.setPreferredSize(new Dimension(150, 50)); // 버튼 크기 설정
+        mainNoticeButton.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2)); // 테두리 선 설정
+        navPanel.add(mainNoticeButton);
+
+        // 레시피 버튼 추가
+        JButton mainRecipeButton = new JButton("레시피");
+        mainRecipeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //레시피 오픈
+                //recipUI.open();
+            }
+        });
+        mainRecipeButton.setFont(new Font("맑은 고딕", Font.BOLD, 20));
+        mainRecipeButton.setForeground(Color.WHITE);
+        mainRecipeButton.setBackground(Color.PINK);
+        mainRecipeButton.setPreferredSize(new Dimension(150, 50)); // 버튼 크기 설정
+        mainRecipeButton.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2)); // 테두리 선 설정
+        navPanel.add(mainRecipeButton);
+
+        // 사이트 소개 버튼 추가
+        JButton SiteButton = new JButton("사이트 소개");
+        SiteButton.setFont(new Font("맑은 고딕", Font.BOLD, 20));
+        SiteButton.setForeground(Color.WHITE);
+        SiteButton.setBackground(Color.PINK);
+        SiteButton.setPreferredSize(new Dimension(150, 50)); // 버튼 크기 설정
+        SiteButton.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2)); // 테두리 선 설정
+        navPanel.add(SiteButton); // 사이트 소개 버튼을 네비게이션 바에 추가
+        SiteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SiteIntroduceUI siteIntroduceUI = new SiteIntroduceUI();
+                frame.dispose();
+                siteIntroduceUI.open();
+            }
+        });
+
+        // 마이페이지 버튼
+        JButton mainMyPageButton = new JButton("마이페이지");
+        mainMyPageButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String memberId = SessionManager.getAttribute("userId");
+                if(memberId != null && !memberId.isEmpty()){
+                    MyPageUI myPageUI = new MyPageUI();
+                    frame.dispose();
+                    myPageUI.open();
+                } else  {
+                    JOptionPane.showMessageDialog(null,"로그인을 해주세요.");
+                }
+            }
+        });
+        mainMyPageButton.setFont(new Font("맑은 고딕", Font.BOLD, 20));
+        mainMyPageButton.setForeground(Color.WHITE);
+        mainMyPageButton.setBackground(Color.PINK);
+        mainMyPageButton.setPreferredSize(new Dimension(150, 50)); // 버튼 크기 설정
+        mainMyPageButton.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2)); // 테두리 선 설정
+        navPanel.add(mainMyPageButton);
+
+        frame.getContentPane().setLayout(new BorderLayout());
+        frame.getContentPane().add(navPanel, BorderLayout.WEST); // 네비게이션 바를 서쪽에 배치
+        frame.getContentPane().add(headerPanel, BorderLayout.NORTH); // 헤더 패널을 북쪽에 배치
+
+        //----------------------------------------------
 
         JLabel lblNewLabel = new JLabel("마이페이지");
-        lblNewLabel.setFont(new Font("굴림", Font.BOLD, 47));
-        lblNewLabel.setBounds(300, 27, 238, 53);
-        f.getContentPane().add(lblNewLabel);
+        lblNewLabel.setFont(new Font("맑은 고딕", Font.BOLD, 20));
+        lblNewLabel.setBounds(330, 50, 238, 53);
+        panel.add(lblNewLabel);
         //Main Topic
 
 
@@ -29,15 +196,15 @@ public class MyPageUI {
         btnMemberInfoUI.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 MemberInfoUI memberInfoUI = new MemberInfoUI();
-                f.dispose();
+                frame.dispose();
                 memberInfoUI.open();
             }
         });
-        btnMemberInfoUI.setFont(new Font("굴림", Font.BOLD, 23));
+        btnMemberInfoUI.setFont(new Font("맑은 고딕", Font.BOLD, 15));
         btnMemberInfoUI.setForeground(Color.BLACK);
         btnMemberInfoUI.setBackground(Color.WHITE);
-        btnMemberInfoUI.setBounds(550, 282, 200, 38);
-        f.getContentPane().add(btnMemberInfoUI);
+        btnMemberInfoUI.setBounds(300, 140, 150, 50);
+        panel.add(btnMemberInfoUI);
         //Open MemberInfoUI Button
 
 
@@ -45,15 +212,15 @@ public class MyPageUI {
         btnPostListUI.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 PostListUI postListUI = new PostListUI();
-                f.dispose();
+                frame.dispose();
                 postListUI.open();
             }
         });
-        btnPostListUI.setFont(new Font("굴림", Font.BOLD, 23));
+        btnPostListUI.setFont(new Font("맑은 고딕", Font.BOLD, 15));
         btnPostListUI.setForeground(Color.BLACK);
         btnPostListUI.setBackground(Color.WHITE);
-        btnPostListUI.setBounds(550, 482, 200, 38);
-        f.getContentPane().add(btnPostListUI);
+        btnPostListUI.setBounds(300, 200, 150, 50);
+        panel.add(btnPostListUI);
         //Open btnPostListUI Button
 
 
@@ -61,31 +228,37 @@ public class MyPageUI {
         btnScrapListUI.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 ScrapListUI scrapListUI = new ScrapListUI();
-                f.dispose();
+                frame.dispose();
                 scrapListUI.open();
             }
         });
-        btnScrapListUI.setFont(new Font("굴림", Font.BOLD, 23));
+        btnScrapListUI.setFont(new Font("맑은 고딕", Font.BOLD, 15));
         btnScrapListUI.setForeground(Color.BLACK);
         btnScrapListUI.setBackground(Color.WHITE);
-        btnScrapListUI.setBounds(550, 682, 200, 38);
-        f.getContentPane().add(btnScrapListUI);
+        btnScrapListUI.setBounds(300, 260, 150, 50);
+        panel.add(btnScrapListUI);
         //Confirm Password Button
 
 
-        JButton btnMemberListUI = new JButton("회원 리스트");
+        JButton btnMemberListUI = new JButton("회원 조회");
         btnMemberListUI.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 MemberListUI memberListUI = new MemberListUI();
-                f.dispose();
+                frame.dispose();
                 memberListUI.open();
             }
         });
-        btnMemberListUI.setFont(new Font("굴림", Font.BOLD, 23));
+        btnMemberListUI.setFont(new Font("맑은 고딕", Font.BOLD, 15));
         btnMemberListUI.setForeground(Color.BLACK);
         btnMemberListUI.setBackground(Color.WHITE);
-        btnMemberListUI.setBounds(200, 282, 200, 38);
-        f.getContentPane().add(btnMemberListUI);
+        btnMemberListUI.setBounds(300, 320, 150, 50);
+
+        String memberGrade = SessionManager.getAttribute("userGrade");
+        if (memberGrade.equals("0")) {
+            panel.add(btnMemberListUI);
+        } else {
+
+        }
         //Open MemberInfoUI Button
 
 
@@ -99,12 +272,18 @@ public class MyPageUI {
                         userId + "님 회원 탈퇴 하시겠습니까?", "회원 탈퇴", JOptionPane.YES_NO_OPTION);
 
                 if (deleteAccount == JOptionPane.YES_OPTION) {
-                    String input = JOptionPane.showInputDialog(f, "'탈퇴 확인'을 입력해주세요.");
+                    String input = JOptionPane.showInputDialog(frame, "'탈퇴 확인'을 입력해주세요.");
 
                     if (input.equals("탈퇴 확인")) {
 
                         MemberDao memberDao = new MemberDao();
                         memberDao.deleteAccount(userId);
+
+                        SessionManager.clearSession();
+                        JOptionPane.showMessageDialog(null,"탈퇴 되었습니다.");
+                        JOptionPane.showMessageDialog(null, "로그아웃했습니다.");
+                        frame.dispose(); // 현재 화면 닫기
+                        MainController.returnToHome(); // 홈 버튼을 눌렀을 때 초기화면으로 돌아가는 메서드 호출
                     } else {
                         JOptionPane.showMessageDialog(null, "탈퇴를 취소합니다.");
                     }
@@ -113,14 +292,17 @@ public class MyPageUI {
                 }
             }
         });
-        btndeleteAccount.setFont(new Font("굴림", Font.BOLD, 23));
+        btndeleteAccount.setFont(new Font("맑은 고딕", Font.BOLD, 15));
         btndeleteAccount.setForeground(Color.BLACK);
         btndeleteAccount.setBackground(Color.WHITE);
-        btndeleteAccount.setBounds(550, 882, 200, 38);
-        f.getContentPane().add(btndeleteAccount);
+        btndeleteAccount.setBounds(300, 380, 150, 50);
+        panel.add(btndeleteAccount);
         //Confirm Password Button
 
+        scroll = new JScrollPane(panel);
+        frame.add(panel);
+        panel.add(scroll);
 
-        f.setVisible(true);
+        frame.setVisible(true);
     }
 }
